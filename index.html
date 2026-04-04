@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>织带企业宣传册 - 多语种版</title>
+    <style>
+        /* 基础设置 */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #f0f0f0; font-family: "Microsoft YaHei", sans-serif; overflow-x: hidden; }
+
+        /* 图片容器 */
+        .container { width: 100%; max-width: 750px; margin: 0 auto; display: flex; flex-direction: column; }
+        .page { width: 100%; line-height: 0; }
+        .page img { width: 100%; height: auto; display: block; }
+
+        /* 悬浮窗外层容器 */
+        .nav-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+            pointer-events: none; /* 让容器不遮挡下方点击，仅子元素响应 */
+        }
+
+        /* 语言选项面板 */
+        .lang-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 10px;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
+            transform: translateY(0); /* 默认显示 */
+        }
+
+        /* 收起状态 */
+        .lang-panel.collapsed {
+            transform: translateY(-100%);
+        }
+
+        /* 圆角矩形按钮 */
+        .lang-btn {
+            flex: 1;
+            max-width: 110px;
+            padding: 10px 5px;
+            background: #004a99; /* 企业标准蓝 */
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+        .lang-btn:active { opacity: 0.7; }
+
+        /* 切换开关圆形按钮 */
+        .toggle-handle {
+            position: absolute;
+            top: 100%; /* 紧贴面板底部 */
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: #004a99;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: auto;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* 三角形图案 */
+        .triangle {
+            width: 0; height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 8px solid white; /* 默认向上 */
+            transition: transform 0.4s;
+        }
+        .collapsed + .toggle-handle .triangle {
+            transform: rotate(180deg); /* 收起时旋转180度向下 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-wrapper">
+        <div id="langPanel" class="lang-panel">
+            <div class="lang-btn" onclick="changeLanguage('id')">Indonesia</div>
+            <div class="lang-btn" onclick="changeLanguage('vi')">Tiếng Việt</div>
+            <div class="lang-btn" onclick="changeLanguage('ma')">Bahasa Melayu</div>
+            <div class="lang-btn" style="background:#666;" onclick="changeLanguage('en')">English</div>
+        </div>
+        <div class="toggle-handle" onclick="togglePanel()">
+            <div class="triangle"></div>
+        </div>
+    </div>
+
+    <div class="container" id="imageContainer">
+        <div class="page"><img src="img/zh_en_1.jpg" class="b-img"></div>
+        <div class="page"><img src="img/zh_en_2.jpg" class="b-img"></div>
+        <div class="page"><img src="img/zh_en_3.jpg" class="b-img"></div>
+        <div class="page"><img src="img/zh_en_4.jpg" class="b-img"></div>
+        <div class="page"><img src="img/zh_en_5.jpg" class="b-img"></div>
+        <div class="page"><img src="img/zh_en_6.jpg" class="b-img"></div>
+    </div>
+
+    <script>
+        // 1. 切换面板显示/隐藏
+        function togglePanel() {
+            const panel = document.getElementById('langPanel');
+            panel.classList.toggle('collapsed');
+        }
+
+        // 2. 切换语言逻辑
+        function changeLanguage(langCode) {
+            const images = document.querySelectorAll('.b-img');
+            
+            // 批量替换 6 张图片的 src
+            images.forEach((img, index) => {
+                const pageNum = index + 1;
+                // 拼接路径：img/zh_id_1.jpg 等
+                img.src = `img/zh_${langCode}_${pageNum}.jpg`;
+            });
+
+            // 点击后自动收起悬浮窗
+            const panel = document.getElementById('langPanel');
+            if (!panel.classList.contains('collapsed')) {
+                panel.classList.add('collapsed');
+            }
+
+            // 可选：切换后自动回到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
