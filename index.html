@@ -59,6 +59,34 @@
         }
         .lang-btn:active { opacity: 0.7; }
 
+        /* 始终可用的 PDF 下载入口，不随语言面板收起 */
+        .download-wrapper {
+            position: fixed;
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            left: 0;
+            width: 100%;
+            padding: 0 16px;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .download-btn {
+            max-width: 100%;
+            padding: 12px 20px;
+            background: #004a99;
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            pointer-events: auto;
+        }
+        .download-btn strong { display: block; font-size: 15px; }
+        .download-btn span { display: block; margin-top: 4px; font-size: 12px; }
+        .download-btn:focus-visible { outline: 3px solid #ffcf66; outline-offset: 3px; }
+        .container { padding-bottom: 110px; }
+
         /* 切换开关圆形按钮 */
         .toggle-handle {
             position: absolute;
@@ -113,7 +141,21 @@
         <div class="page"><img src="img/zh_en_6.jpg" class="b-img"></div>
     </div>
 
+    <div class="download-wrapper">
+        <a id="downloadBrochure" class="download-btn" href="downloads/DHXbrochure-zh_en.pdf" download="DHXbrochure-zh_en.pdf">
+            <strong id="downloadLabel">下载 PDF / Download PDF ↓</strong>
+            <span id="downloadDetails">中文 + English · 31.8 MB</span>
+        </a>
+    </div>
+
     <script>
+        const brochures = {
+            en: { label: '下载 PDF / Download PDF ↓', language: '中文 + English', size: '31.8 MB' },
+            id: { label: '下载 PDF / Unduh PDF ↓', language: '中文 + Bahasa Indonesia', size: '20.5 MB' },
+            vi: { label: '下载 PDF / Tải PDF ↓', language: '中文 + Tiếng Việt', size: '29.9 MB' },
+            ma: { label: '下载 PDF / Muat turun PDF ↓', language: '中文 + Bahasa Melayu', size: '20.4 MB' }
+        };
+
         // 1. 切换面板显示/隐藏
         function togglePanel() {
             const panel = document.getElementById('langPanel');
@@ -122,8 +164,16 @@
 
         // 2. 切换语言逻辑
         function changeLanguage(langCode) {
+            const brochure = brochures[langCode];
+            if (!brochure) return;
+            const filename = `DHXbrochure-zh_${langCode}.pdf`;
+            const download = document.getElementById('downloadBrochure');
+            download.href = `downloads/${filename}`;
+            download.download = filename;
+            document.getElementById('downloadLabel').textContent = brochure.label;
+            document.getElementById('downloadDetails').textContent = `${brochure.language} · ${brochure.size}`;
             const images = document.querySelectorAll('.b-img');
-            
+
             // 批量替换 6 张图片的 src
             images.forEach((img, index) => {
                 const pageNum = index + 1;
